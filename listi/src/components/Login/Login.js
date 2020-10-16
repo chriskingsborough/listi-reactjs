@@ -23,7 +23,7 @@ class Login extends React.Component {
         return response.json();
       })
       .then(function (result) {
-        localStorage.setItem("Token", result.get("token"));
+        localStorage.setItem("Token", result);
       })
       .catch(function (error) {
         console.log(error);
@@ -34,6 +34,7 @@ class Login extends React.Component {
     event.preventDefault();
     const data = new FormData(event.target);
     this.login(data.get("email"), data.get("password"));
+    console.log(localStorage.getItem("Token"));
   }
 
   render() {
