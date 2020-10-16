@@ -8,6 +8,7 @@ class Lists extends React.Component {
         super(props);
         
         this.state = {
+            listId: props.listId, 
             userToken: props.token,
             isLoaded: false,
             lists: []
@@ -57,11 +58,19 @@ class Lists extends React.Component {
             console.log("Returning Lists");
             console.log(lists);
             return (
-                <ListGroup>
-                {lists.map(list => {
-                    return <ListGroup.Item>{list[0]}</ListGroup.Item>
-                })}
-                </ListGroup>
+                <div className="sidenav">
+                    <a href="#">listi</a>
+                    <ListGroup>
+                    {lists.map(list => {
+                        // check if the list item id == state id
+                        let isActive;
+                        if (list[1] == this.state.listId) {
+                            isActive = true;
+                        }
+                        return <ListGroup.Item active={isActive}>{list[0]}</ListGroup.Item>
+                    })}
+                    </ListGroup>
+                </div>
             )
 
         }
