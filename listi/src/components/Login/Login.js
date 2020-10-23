@@ -12,7 +12,7 @@ class Login extends React.Component {
   }
 
   login() {
-    fetch(`http://localhost:5000/user/login`, {
+    fetch(`/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,6 +24,8 @@ class Login extends React.Component {
       })
       .then(function (result) {
         localStorage.setItem("Token", result);
+        console.log("token logged");
+        console.log(localStorage.getItem("Token"));
       })
       .catch(function (error) {
         console.log(error);
