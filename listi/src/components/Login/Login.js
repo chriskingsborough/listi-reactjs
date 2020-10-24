@@ -1,52 +1,60 @@
-import React, { useState } from "react";
-const axios = require("axios");
+import React, { useState, createRef } from "react";
+// const axios = require("axios");
 
 class Login extends React.Component {
   constructor() {
     super();
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.email = React.createRef();
+    this.password = React.createRef();
     this.state = {
       token: "",
       error: false,
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  login() {
-    fetch(`http://localhost:5000/user/login`, {
+  async login(email, password) {
+    return fetch(`/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: "jarz@gmail.com", password: "password" }),
+      body: JSON.stringify({ 
+        email: email,
+        password: password 
+      }),
     })
       .then(function (response) {
         return response.json();
       })
       .then(function (result) {
-        localStorage.setItem("Token", result);
+        localStorage.setItem("Token", result.token);
+        return result.token;
       })
       .catch(function (error) {
         console.log(error);
       });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
+    const email = this.email.current.value;
+    const password = this.password.current.value;
+
     event.preventDefault();
-    const data = new FormData(event.target);
-    this.login(data.get("email"), data.get("password"));
-    console.log(localStorage.getItem("Token"));
+    const token = await this.login(email, password);
+    this.props.handleToken(token);
   }
 
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
         <label htmlFor="email">Enter email</label>
-        <input id="email" name="email" type="email" />
+        <input id="email" name="email" type="email" ref={this.email}/>
 
         <label htmlFor="email">Enter password</label>
-        <input id="password" name="password" type="password" />
+        <input id="password" name="password" type="password" ref={this.password}/>
 
-        <button>Send data!</button>
+        <button>Login!</button>
       </form>
     );
   }

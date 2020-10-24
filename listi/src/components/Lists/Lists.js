@@ -8,7 +8,7 @@ class Lists extends React.Component {
 
     this.state = {
       listId: props.listId,
-      userToken: props.token,
+      userToken: props.token.token,
       isLoaded: false,
       lists: [],
     };
