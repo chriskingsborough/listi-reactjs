@@ -2,6 +2,8 @@ import React from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import "./Lists.css";
 
+
+
 class Lists extends React.Component {
   constructor(props) {
     super(props);
@@ -11,7 +13,33 @@ class Lists extends React.Component {
       userToken: props.token.token,
       isLoaded: false,
       lists: [],
+      // update singlelist type
+      listId: "",
+      listData: []
     };
+  }
+
+  handleListClick(listId, event) {
+    if (listId) {
+      fetch(`/lists/${listId}`, {
+        method: "GET",
+        headers: {
+          Token: this.state.userToken
+        }
+      })
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        this.setState({
+          listId: listId,
+          listData: result
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+    }
   }
 
   componentDidMount() {
@@ -39,16 +67,16 @@ class Lists extends React.Component {
   }
 
   render() {
-    const { error, isLoaded, lists } = this.state;
+    const { error, isLoaded, lists, listId, listData } = this.state;
     if (error) {
       return <div>Error: {error.message}</div>;
     } else if (!isLoaded) {
       return <div>Loading lists...</div>;
     } else {
-      console.log(this.state.userToken);
-      console.log("Returning Lists");
-      console.log(lists);
+      console.log(listId);
+      console.log(listData);
       return (
+        <div className="home">
         <div className="sidenav">
           <a href="#">listi</a>
           <ListGroup>
@@ -59,10 +87,18 @@ class Lists extends React.Component {
                 isActive = true;
               }
               return (
-                <ListGroup.Item active={isActive}>{list[0]}</ListGroup.Item>
+                <ListGroup.Item 
+                  active={isActive}
+                  eventKey={list[1]}
+                  /*onClick={this.handleListClick}*/
+                  onClick={this.handleListClick.bind(this, list[1])}>{list[0]}</ListGroup.Item>
               );
             })}
           </ListGroup>
+        </div>
+        <div className="main">
+            <h1>{this.state.listData.name}</h1>
+        </div>
         </div>
       );
     }
